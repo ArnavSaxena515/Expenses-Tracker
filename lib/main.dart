@@ -1,11 +1,12 @@
 import 'dart:io';
 
+import 'package:expenses_tracker/models/file_handler.dart';
 import 'package:expenses_tracker/widgets/chart.dart';
 import 'package:expenses_tracker/widgets/new_transaction.dart';
 import 'package:expenses_tracker/widgets/transaction_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'models/transaction.dart';
 
 void main() {
@@ -45,7 +46,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _userTransactions = []; // List to hold the objects of Transaction Model class
-
   List<Transaction> get _recentTransactions {
     return _userTransactions.where((tx) {
       //tx is transaction
@@ -53,7 +53,24 @@ class _MyHomePageState extends State<MyHomePage> {
     }).toList();
   }
 
-  void _addUserTransaction(double amount, String title, String description, DateTime date) {
+  @override
+  void initState() {
+    _readUserTransactions(); // call read method during state initialization to load previous app data from local storage
+    super.initState();
+  }
+
+  void _readUserTransactions() async {
+    // async function to read userData from local storage
+    FileHandler fileHandler = FileHandler(prefs: await SharedPreferences.getInstance()); // Initialise file handler with the sharedPReference
+    List<Transaction> storedTransactions = fileHandler.readData(); // get the list of user transactions stored in local storage
+    for (var element in storedTransactions) {
+      setState(() {
+        _userTransactions.add(element); //populate the UI with the previously stored transactions
+      });
+    }
+  }
+
+  void _addUserTransaction(double amount, String title, String description, DateTime date) async {
     final newTransaction = Transaction(
       id: DateTime.now().toString(),
       title: title,
@@ -61,9 +78,13 @@ class _MyHomePageState extends State<MyHomePage> {
       date: date,
       description: description,
     );
+
     setState(() {
       _userTransactions.add(newTransaction);
     });
+
+    FileHandler fileHandler = FileHandler(prefs: await SharedPreferences.getInstance());
+    fileHandler.writeData(_userTransactions); //write the new updated list of user transactions to local storage
   }
 
   void _startAddNewTransaction(BuildContext context) {
@@ -76,8 +97,14 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 
-  void _deleteTransaction(String id) => setState(() => _userTransactions.removeWhere((tx) => tx.id == id));
+  Future<void> _deleteTransaction(String id) async {
+    setState(() => _userTransactions.removeWhere((tx) => tx.id == id));
+    FileHandler fileHandler = FileHandler(prefs: await SharedPreferences.getInstance());
+    fileHandler.writeData(_userTransactions); //write the new updated list of user transactions to local storage
+  }
+
   bool _showChart = false;
+
   Column buildLandscapeColumn(MediaQueryData mediaQuery, PreferredSizeWidget appBar, BuildContext context, Container chartContainer, SizedBox transactionsListBox) {
     return Column(//Column to draw if landscape orientation
         children: [
