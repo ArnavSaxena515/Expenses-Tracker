@@ -32,9 +32,11 @@ class FileHandler {
     for (var i = 0; i < data!.length; i++) {
       var newData = jsonDecode(data[i]); //returns a dynamic object that must be parsed into a transaction object so that it can be added to the transactions list
       Transaction newItem =
-          Transaction(id: newData["id"], title: newData["title"], amount: newData["amount"], date: DateTime.parse(newData["id"]), description: newData["description"]);
+          Transaction(id: newData["id"], title: newData["title"], amount: newData["amount"], date: DateTime.parse(newData["date"]), description: newData["description"]);
       transactions.add(newItem);
     }
+    transactions.sort((a, b) => a.date.compareTo(b.date)); // sort transactions according to date
+
     return transactions;
   }
 }
