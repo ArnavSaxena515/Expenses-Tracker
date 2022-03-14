@@ -81,6 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     setState(() {
       _userTransactions.add(newTransaction);
+      _userTransactions.sort((a, b) => a.date.compareTo(b.date));
     });
 
     FileHandler fileHandler = FileHandler(prefs: await SharedPreferences.getInstance());
