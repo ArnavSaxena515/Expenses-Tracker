@@ -90,6 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _startAddNewTransaction(BuildContext context) {
     showModalBottomSheet(
+        isScrollControlled: true, // prevents keyboard from overlaying on top of the modal sheet
         context: context,
         builder: (_) {
           return NewTransaction(
@@ -199,10 +200,12 @@ class _MyHomePageState extends State<MyHomePage> {
           );
     return Platform.isIOS
         ? CupertinoPageScaffold(
+            resizeToAvoidBottomInset: true,
             navigationBar: appBar as ObstructingPreferredSizeWidget,
             child: _screenBody,
           )
         : Scaffold(
+            resizeToAvoidBottomInset: true,
             appBar: appBar,
             body: _screenBody,
             floatingActionButton: Platform.isIOS

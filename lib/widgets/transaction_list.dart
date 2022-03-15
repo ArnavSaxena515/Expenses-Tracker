@@ -82,11 +82,10 @@ class TransactionList extends StatelessWidget {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                FittedBox(
-                                    child: Text(
+                                Text(
                                   userTransactions[index].description as String,
                                   style: Theme.of(context).textTheme.bodySmall,
-                                )),
+                                ),
                                 DeleteButton(
                                   deleteItem: deleteItem,
                                   userTransactions: userTransactions,
