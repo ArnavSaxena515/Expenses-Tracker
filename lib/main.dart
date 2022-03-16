@@ -147,30 +147,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
     final appBar = Platform
             .isIOS // add type of widget because dart inference will see this object as a type widget and widget by default does not have a preferred sized object, so mention that apBar is a preferred size widget
-        ? CupertinoNavigationBar(
-            middle: const Text("Expenses Tracker"),
-            trailing: Row(
-              children: [
-                IconButton(
-                  onPressed: () => _startAddNewTransaction(context),
-                  icon: const Icon(
-                    CupertinoIcons.add,
-                  ),
-                ),
-              ],
-            ),
-          )
-        : AppBar(
-            title: const Text("Expenses Tracker"),
-            actions: [
-              IconButton(
-                onPressed: () {
-                  _startAddNewTransaction(context);
-                },
-                icon: const Icon(Icons.add),
-              ),
-            ],
-          ) as PreferredSizeWidget;
+        ? buildCupertinoNavigationBar(context)
+        : buildAppBar2(context) as PreferredSizeWidget;
     final chartContainer = Container(
       height: (mediaQuery.size.height - appBar.preferredSize.height - mediaQuery.padding.top) *
           (_isLandscape ? 0.7 : 0.3), // change scaling factor based on the device orientation
@@ -189,15 +167,11 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
 
-    final _screenBody = _isLandscape
-        ? buildLandscapeColumn(mediaQuery, appBar, context, chartContainer, transactionsListBox)
-        : Column(
-            // for landscape mode show chart as well as transactions list
-            children: [
-              chartContainer,
-              transactionsListBox,
-            ],
-          );
+    final _screenBody = SafeArea(
+        child: SingleChildScrollView(
+            child: _isLandscape
+                ? buildLandscapeColumn(mediaQuery, appBar, context, chartContainer, transactionsListBox)
+                : buildPortraitColumn(chartContainer, transactionsListBox)));
     return Platform.isIOS
         ? CupertinoPageScaffold(
             resizeToAvoidBottomInset: true,
@@ -218,6 +192,46 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
             floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
           );
+  }
+
+  AppBar buildAppBar2(BuildContext context) {
+    return AppBar(
+      title: const Text("Expenses Tracker"),
+      actions: [
+        IconButton(
+          onPressed: () {
+            _startAddNewTransaction(context);
+          },
+          icon: const Icon(Icons.add),
+        ),
+      ],
+    );
+  }
+
+  CupertinoNavigationBar buildCupertinoNavigationBar(BuildContext context) {
+    return CupertinoNavigationBar(
+      middle: const Text("Expenses Tracker"),
+      trailing: Row(
+        children: [
+          IconButton(
+            onPressed: () => _startAddNewTransaction(context),
+            icon: const Icon(
+              CupertinoIcons.add,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Column buildPortraitColumn(Container chartContainer, SizedBox transactionsListBox) {
+    return Column(
+      // for landscape mode show chart as well as transactions list
+      children: [
+        chartContainer,
+        transactionsListBox,
+      ],
+    );
   }
 }
 //TODO: add animations maybe?

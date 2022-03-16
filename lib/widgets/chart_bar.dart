@@ -13,9 +13,12 @@ class ChartBar extends StatelessWidget {
         children: [
           SizedBox(
             height: constraints.maxHeight * 0.1,
-            child: FittedBox(
-              child: Text(
-                "\$${spentAmount.toStringAsFixed(0)}",
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 3.0, vertical: 0),
+              child: FittedBox(
+                child: Text(
+                  "\$${spentAmount.toStringAsFixed(0)}",
+                ),
               ),
             ),
           ),
@@ -36,7 +39,7 @@ class ChartBar extends StatelessWidget {
                   ),
                 ),
                 FractionallySizedBox(
-                  //fractionallysizedbox to fill in the spaces available according to the percentage of expense we have
+                  //FractionallySizedBox to fill in the spaces available according to the percentage of expense we have
                   heightFactor: spentPercentageTotal,
                   child: Container(
                     decoration: BoxDecoration(

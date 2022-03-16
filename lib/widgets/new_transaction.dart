@@ -29,8 +29,6 @@ class _NewTransactionState extends State<NewTransaction> {
     Navigator.of(context).pop();
   }
 
-  final _scrollController = ScrollController();
-
   void _presentDatePicker() {
     showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime(DateTime.now().year), lastDate: DateTime.now()).then((selectedDate) {
       if (selectedDate == null) {

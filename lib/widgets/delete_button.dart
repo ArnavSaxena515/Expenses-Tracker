@@ -7,12 +7,10 @@ class DeleteButton extends StatelessWidget {
     Key? key,
     required this.deleteItem,
     required this.userTransactions,
-    required this.index,
   }) : super(key: key);
 
   final Function deleteItem;
-  final List<Transaction> userTransactions;
-  final int index;
+  final Transaction userTransactions;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +19,7 @@ class DeleteButton extends StatelessWidget {
         Icons.delete,
         color: Theme.of(context).errorColor,
       ),
-      onPressed: () => deleteItem(userTransactions[index].id),
+      onPressed: () => deleteItem(userTransactions.id),
     );
   }
 }
