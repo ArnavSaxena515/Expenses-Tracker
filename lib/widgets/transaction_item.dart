@@ -59,13 +59,15 @@ class TransactionItem extends StatelessWidget {
         trailing: MediaQuery.of(context).size.width > 400
             ? LayoutBuilder(builder: (context, constraints) {
                 return SizedBox(
-                  width: constraints.maxWidth - 300,
+                  width: constraints.maxWidth - 200,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        userTransactions.description as String,
-                        style: Theme.of(context).textTheme.bodySmall,
+                      FittedBox(
+                        child: Text(
+                          userTransactions.description as String,
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
                       ),
                       DeleteButton(
                         deleteItem: deleteItem,

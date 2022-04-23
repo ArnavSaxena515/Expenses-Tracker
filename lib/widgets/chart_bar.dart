@@ -17,7 +17,7 @@ class ChartBar extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 3.0, vertical: 0),
               child: FittedBox(
                 child: Text(
-                  "\$${spentAmount.toStringAsFixed(0)}",
+                  "₹${spentAmount.toStringAsFixed(0)}",
                 ),
               ),
             ),

@@ -49,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Transaction> get _recentTransactions {
     return _userTransactions.where((tx) {
       //tx is transaction
-      return tx.date.isAfter(DateTime.now().subtract(const Duration(days: 7)));
+      return tx.date.isAfter(dateReference.subtract(const Duration(days: 7)));
     }).toList();
   }
 
@@ -107,7 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   bool _showChart = false;
 
-  Column buildLandscapeColumn(MediaQueryData mediaQuery, PreferredSizeWidget appBar, BuildContext context, Container chartContainer, SizedBox transactionsListBox) {
+  Column buildLandscapeColumn(MediaQueryData mediaQuery, PreferredSizeWidget appBar, BuildContext context, Container chartContainer, Container transactionsListBox) {
     return Column(//Column to draw if landscape orientation
         children: [
       SizedBox(
@@ -140,8 +140,11 @@ class _MyHomePageState extends State<MyHomePage> {
         );
   } // function to return a column for landscape orientation
 
+  DateTime dateReference = DateTime.now();
+
   @override
   Widget build(BuildContext context) {
+    // print("Building UI with date reference: ${dateReference.toString()}");
     final mediaQuery = MediaQuery.of(context);
     bool _isLandscape = mediaQuery.orientation == Orientation.landscape;
 
@@ -150,14 +153,18 @@ class _MyHomePageState extends State<MyHomePage> {
         ? buildCupertinoNavigationBar(context)
         : buildAppBar2(context) as PreferredSizeWidget;
     final chartContainer = Container(
-      height: (mediaQuery.size.height - appBar.preferredSize.height - mediaQuery.padding.top) *
-          (_isLandscape ? 0.7 : 0.3), // change scaling factor based on the device orientation
+      height: ((mediaQuery.size.height - appBar.preferredSize.height - mediaQuery.padding.top) * (_isLandscape ? 0.7 : 0.4)).abs(),
+      // change scaling factor based on the device orientation
       width: double.infinity,
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-      child: Chart(recentTransactions: _recentTransactions),
+      child: Chart(
+          referenceDate: dateReference,
+          recentTransactions: _userTransactions,
+          height: ((mediaQuery.size.height - appBar.preferredSize.height - mediaQuery.padding.top) * (_isLandscape ? 0.7 : 0.4)).abs()),
     );
-    final transactionsListBox = SizedBox(
-      height: (mediaQuery.size.height - appBar.preferredSize.height - mediaQuery.padding.top) * (_isLandscape ? 0.9 : 0.7),
+    final transactionsListBox = Container(
+      // margin: const EdgeInsets.symmetric(vertical: 80),
+      height: (mediaQuery.size.height - appBar.preferredSize.height - mediaQuery.padding.top) * (_isLandscape ? 0.9 : 0.6),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 15.0),
         child: TransactionList(
@@ -224,7 +231,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Column buildPortraitColumn(Container chartContainer, SizedBox transactionsListBox) {
+  Column buildPortraitColumn(Container chartContainer, Container transactionsListBox) {
     return Column(
       // for landscape mode show chart as well as transactions list
       children: [

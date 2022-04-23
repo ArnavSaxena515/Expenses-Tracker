@@ -29,13 +29,19 @@ class FileHandler {
     //function to read user transaction data from shared preferences
     List<Transaction> transactions = []; //empty list to be populated and returned
     final data = prefs.getStringList('transactions'); //get the list of strings from the file
-    for (var i = 0; i < data!.length; i++) {
-      var newData = jsonDecode(data[i]); //returns a dynamic object that must be parsed into a transaction object so that it can be added to the transactions list
-      Transaction newItem =
-          Transaction(id: newData["id"], title: newData["title"], amount: newData["amount"], date: DateTime.parse(newData["date"]), description: newData["description"]);
-      transactions.add(newItem);
+    if (data!.isNotEmpty) {
+      for (var i = 0; i < data.length; i++) {
+        var newData = jsonDecode(data[i]); //returns a dynamic object that must be parsed into a transaction object so that it can be added to the transactions list
+        Transaction newItem = Transaction(
+            id: newData["id"], title: newData["title"], amount: newData["amount"], date: DateTime.parse(newData["date"]), description: newData["description"]);
+        transactions.add(newItem);
+      }
+    } else {
+      transactions = [];
     }
-    transactions.sort((a, b) => a.date.compareTo(b.date)); // sort transactions according to date
+    transactions.sort((b, a) {
+      return a.date.compareTo(b.date);
+    }); // sort transactions according to date
 
     return transactions;
   }
